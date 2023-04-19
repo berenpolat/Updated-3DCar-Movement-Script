@@ -1,0 +1,56 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+
+public abstract class Vehicles : MonoBehaviour
+{
+  public float motorTorque = 2000f; // Torque applied to the wheels
+  public float brakeTorque = 2000f; // Torque applied when braking
+  public float maxSteerAngle = 30f; // Maximum angle the wheels can turn
+  public WheelCollider frontLeftWheel, frontRightWheel; // Reference to the front wheels
+  public WheelCollider rearLeftWheel, rearRightWheel; // Reference to the rear wheels
+
+  private float currentSteerAngle; // Current angle the wheels are turned
+  private float currentMotorTorque; // Current torque applied to the wheels
+
+  // Update is called once per frame
+  void Update()
+  {
+    // Get the user input for steering and motor torque
+    float horizontalInput = Input.GetAxis("Horizontal");
+    float verticalInput = Input.GetAxis("Vertical");
+
+    // Calculate the current angle the wheels should be turned
+    currentSteerAngle = maxSteerAngle * horizontalInput;
+
+    // Calculate the current torque that should be applied to the wheels
+    currentMotorTorque = motorTorque * verticalInput;
+
+    // Apply the steering to the front wheels
+    frontLeftWheel.steerAngle = currentSteerAngle;
+    frontRightWheel.steerAngle = currentSteerAngle;
+
+    // Apply the motor torque to the rear wheels
+    rearLeftWheel.motorTorque = currentMotorTorque;
+    rearRightWheel.motorTorque = currentMotorTorque;
+
+    // Apply the brakes if the user is not accelerating
+    if (verticalInput == 0)
+    {
+      rearLeftWheel.brakeTorque = brakeTorque;
+      rearRightWheel.brakeTorque = brakeTorque;
+    }
+    else
+    {
+      rearLeftWheel.brakeTorque = 0;
+      rearRightWheel.brakeTorque = 0;
+    }
+  }
+   
+  }
+  
+  
+  //You should increase the values of damper(belongs to wheel collider), mass and the spring(belongs to wheel collider) from the inspector. 
+  //For exp: Mass:100 ; Damper: 90000 ; Spring: 9000 . 
